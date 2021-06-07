@@ -1,0 +1,88 @@
+{% extends "taxes_app/base.html" %}
+{% load mathfilters %}
+{% block content %}
+  <article class="media content-section">
+    <!-- <img class="rounded-circle article-img" src="{{ object.darbas.asmuo.profile.image.url }}"> -->
+    <div class="media-body">
+      <div class="article-metadata">
+        <a class="mr-2" href="{% url 'profile' %}">{{ object.darbas.asmuo }}</a>
+        <small class="text-muted">{{ object.date_posted|date:"F d, Y" }}</small>
+        {% if object.darbas.asmuo == user %}
+          <div>
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'uzdarbis-update' object.id %}">Atnaujinti</a>
+            <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'uzdarbis-delete' object.id %}">Ištrinti</a>
+          </div>
+        {% endif %}
+      </div>
+      <article class="media content-section">
+        <div class="media-body">
+          <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{ veikla.pavadinimas }}</legend>
+            <div class="border-bottom mb-4">Pajamos: 
+              <div class ="calc_results_red">{{ object.pajamos | floatformat:2}} Eur</div>
+            </div>
+            <div class="border-bottom mb-4">Išlaidos: 
+              <div class ="calc_results_red">{{ object.islaidos_pasirinkimas | floatformat:2}} Eur</div>
+            </div>
+          </fieldset>
+        </div>
+      </article>
+      <article class="media content-section">
+        <div class="media-body">
+          <fieldset class="form-group">
+            <legend class="border-bottom mb-4"> GPM</legend>
+              {% if object.darbas.status2 == 'i30' %}
+                <div class="border-bottom mb-4">Suma skaičiuoti GPM: 
+                  <div class ="calc_results_red">{{object.islaidos30 | floatformat:2}} Eur</div>
+                </div>
+                <div class="border-bottom mb-4">GPM: 
+                  <div class ="calc_results_red">{{object.islaidos_30_GPM | floatformat:2}} Eur</div>
+                </div>
+              {% elif object.darbas.status2 == 'isf' %}
+                <div class="border-bottom mb-4">Suma skaičiuoti GPM: 
+                  <div class ="calc_results_red">{{object.islaidos_faktines | floatformat:2}} Eur</div>
+                </div>
+                <div class="border-bottom mb-4">GPM: 
+                  <div class ="calc_results_red">{{object.islaidos_faktines_GPM | floatformat:2}} Eur</div>
+                </div>
+              {% endif %}
+          </fieldset>
+        </div>
+      </article>
+      <article class="media content-section">
+        <div class="media-body">
+          <fieldset class="form-group">
+            <legend class="border-bottom mb-4">SoDra</legend>
+              <div class="border-bottom mb-4">Suma skaičiuoti VSD ir PSD: 
+                <div class="calc_results_red">{{object.sodra | floatformat:2}} Eur</div>
+              </div>
+              <div class="border-bottom mb-4">VSD: 
+                <div class="calc_results_red">{{object.vsd | floatformat:2}} Eur</div>
+              </div>
+              <div class="border-bottom mb-4">PSD: 
+                <div class="calc_results_red">{{object.psd | floatformat:2}} Eur</div>
+              </div>
+              <div class="border-bottom mb-4">Mokeščiai SoDra: 
+                <div class="calc_results_red">{{object.mokesciai_sodra | floatformat:2}} Eur</div>
+              </div>
+          </fieldset>
+        </div>
+      </article>
+      <article class="media content-section">
+        <div class="media-body">
+          <fieldset class="form-group">
+            <div class="border-bottom mb-4">Mokeščiai: 
+              <div class ="calc_results_red">{{object.mokesciai | floatformat:2}} Eur</div>
+            </div>
+            <div class="border-bottom mb-4">Pajamos po mokeščių: 
+              <div class="calc_results_red">{{object.pajamos_po_mokesciu | floatformat:2}} Eur</div>
+            </div>
+            <div class="border-bottom mb-4">Pelnas: 
+              <div class="calc_results_red">{{object.pelnas | floatformat:2}} Eur</div>
+            </div>
+          </fieldset>
+        </div>
+      </article>
+    </div>
+  </article>
+{% endblock content %}

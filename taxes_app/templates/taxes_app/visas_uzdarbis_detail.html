@@ -1,0 +1,154 @@
+{% extends "taxes_app/base.html" %}
+{% load mathfilters %}
+{% block content %}
+  <article class="media content-section">
+    <!-- <img class="rounded-circle article-img" src="{{ veikla.asmuo.profile.image.url }}"> -->
+    <div class="media-body">
+      <div class="article-metadata">
+        <a class="mr-2" href="{% url 'profile' %}">{{ veikla.asmuo }}</a>
+        <small class="text-muted">{{ veikla.date_posted|date:"F d, Y" }}</small>
+      </div>
+      <article class="media content-section">
+        <div class="media-body">
+          <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{ veikla.pavadinimas }}</legend>
+            <div class="border-bottom mb-4">Visos Pajamos: 
+              <div class ="calc_results_red">{{ veikla.suma_pajamos | floatformat:2}} Eur</div>
+            </div>
+            <div class="border-bottom mb-4">Visos Išlaidos: 
+              <div class ="calc_results_red">{{ veikla.suma_islaidos_pasirinkimas | floatformat:2}} Eur</div>
+            </div>
+          </fieldset>
+        </div>
+      </article>
+      <article class="media content-section">
+        <div class="media-body">
+          <fieldset class="form-group">
+            <legend class="border-bottom mb-4"> GPM</legend>
+              {% if veikla.status2 == 'i30' %}
+                <div class="border-bottom mb-4">Suma skaičiuoti GPM: 
+                  <div class ="calc_results_red">{{veikla.suma_islaidos30 | floatformat:2}} Eur</div>
+                </div>
+                <div class="border-bottom mb-4">Viso GPM: 
+                  <div class ="calc_results_red">{{veikla.suma_islaidos_30_GPM | floatformat:2}} Eur</div>
+                </div>
+              {% elif veikla.status2 == 'isf' %}
+                <div class="border-bottom mb-4">Suma skaičiuoti GPM: 
+                  <div class ="calc_results_red">{{veikla.suma_islaidos_faktines | floatformat:2}} Eur</div>
+                </div>
+                <div class="border-bottom mb-4">Viso GPM: 
+                  <div class ="calc_results_red">{{veikla.suma_islaidos_faktines_GPM | floatformat:2}} Eur</div>
+                </div>
+              {% endif %}
+          </fieldset>
+        </div>
+      </article>
+      <article class="media content-section">
+        <div class="media-body">
+          <fieldset class="form-group">
+            <legend class="border-bottom mb-4">SoDra</legend>
+              <div class="border-bottom mb-4">Suma skaičiuoti VSD ir PSD: 
+                <div class="calc_results_red">{{veikla.suma_sodra | floatformat:2}} Eur</div>
+              </div>
+              <div class="border-bottom mb-4">Viso VSD: 
+                <div class="calc_results_red">{{veikla.suma_vsd | floatformat:2}} Eur</div>
+              </div>
+              <div class="border-bottom mb-4">Viso PSD: 
+                <div class="calc_results_red">{{veikla.suma_psd | floatformat:2}} Eur</div>
+              </div>
+              <div class="border-bottom mb-4">Visi Mokeščiai SoDra: 
+                <div class="calc_results_red">{{veikla.suma_mokesciai_sodra | floatformat:2}} Eur</div>
+              </div>
+          </fieldset>
+        </div>
+      </article>
+      <article class="media content-section">
+        <div class="media-body">
+          <fieldset class="form-group">
+            <div class="border-bottom mb-4">Visi Mokeščiai: 
+              <div class ="calc_results_red">{{veikla.suma_mokesciai | floatformat:2}} Eur</div>
+            </div>
+            <div class="border-bottom mb-4">Visos Pajamos po mokeščių: 
+              <div class="calc_results_red">{{veikla.suma_pajamos_po_mokesciu | floatformat:2}} Eur</div>
+            </div>
+            <div class="border-bottom mb-4">Visas Pelnas: 
+              <div class="calc_results_red">{{veikla.suma_pelnas | floatformat:2}} Eur</div>
+            </div>
+          </fieldset>
+        </div>
+      </article>
+    </div>
+  </article>
+  <div class="col-md-12">
+    <canvas id="myChart" width="200" height="200"></canvas>
+    <script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+        datasets: [
+          {
+            label: 'Pajamos',
+            data: [ '{{ veikla.suma_pajamos | floatformat:2 }}'],
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1
+          },
+          {
+            label: 'Išlaidos',
+            data: ['{{ veikla.suma_islaidos_pasirinkimas | floatformat:2 }}'],
+            backgroundColor: 'rgba(0,129, 218, 0.2)',
+            borderColor: 'rgba(0,129, 218, 1)',
+            borderWidth: 1
+          },
+          {
+            label: 'Mokesciai',
+            data: ['{{ veikla.suma_mokesciai | floatformat:2 }}'],
+            backgroundColor: 'rgba(0, 255, 0, 0.2)',
+            borderColor: 'rgba(0, 255, 0, 1)',
+            borderWidth: 1
+          },
+          {
+            label: 'Pelnas',
+            data: [ '{{ veikla.suma_pelnas | floatformat:2 }}'],
+            backgroundColor: 'rgba(255, 215, 0, 0.2)',
+            borderColor: 'rgba(255, 215, 0, 1)',
+            borderWidth: 1
+          }
+        ],
+        labels: [ '{{ veikla.pavadinimas }}'],
+      },
+      options: {
+        callbacks: {
+          label: function (t, d) {
+            var xLabel = d.datasets[t.datasetIndex].label;
+            var yLabel = t.yLabel >= 1000 ? '$' + t.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : '$' + t.yLabel;
+            return xLabel + ': ' + yLabel;
+          }
+        },
+        legend: {
+        display: true,
+        position: 'top'
+        },
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true,
+              callback: function (value, index, values) {
+                if (parseInt(value) >= 1000) {
+                  return '€' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                } else { return '€' + value; }
+              }
+            }
+          }]
+        }
+      },
+      plugins: [{
+        beforeDraw: function (chart) {
+          var labels = chart.data.labels;
+        }
+      }]
+    });
+    </script>
+  </div>
+{% endblock content %}

@@ -1,0 +1,30 @@
+{% extends "taxes_app/base.html" %}
+{% block content %}
+    <center>
+        <div>
+            <a class="btn btn-outline-secondary" href="{% url 'calendar' '2021' 'January' %}">Sausis</a>
+            <a class="btn btn-outline-secondary" href="{% url 'calendar' '2021' 'February' %}">Vasaris</a>
+            <a class="btn btn-outline-secondary" href="{% url 'calendar' '2021' 'March' %}">Kovas</a>
+            <a class="btn btn-outline-secondary" href="{% url 'calendar' '2021' 'April' %}">Balandis</a>
+        </div>
+        <div>
+            <a class="btn btn-outline-secondary" href="{% url 'calendar' '2021' 'May' %}">Gegužė</a>
+            <a class="btn btn-outline-secondary" href="{% url 'calendar' '2021' 'June' %}">Birželis</a>
+            <a class="btn btn-outline-secondary" href="{% url 'calendar' '2021' 'July' %}">Liepa</a>
+            <a class="btn btn-outline-secondary" href="{% url 'calendar' '2021' 'August' %}">Rugpjūtis</a>
+        </div>
+        <div>
+            <a class="btn btn-outline-secondary" href="{% url 'calendar' '2021' 'September' %}">Rugsėjis</a>
+            <a class="btn btn-outline-secondary" href="{% url 'calendar' '2021' 'October' %}">Spalis</a>
+            <a class="btn btn-outline-secondary" href="{% url 'calendar' '2021' 'November' %}">Lapkrytis</a>
+            <a class="btn btn-outline-secondary" href="{% url 'calendar' '2021' 'December' %}">Gruodis</a>
+        </div>
+    </center>
+<article class="media content-section">
+    <div class="media-body">
+        <center>
+        {{ cal | safe }}
+        </center>
+    </div>
+</article>
+{% endblock content %}

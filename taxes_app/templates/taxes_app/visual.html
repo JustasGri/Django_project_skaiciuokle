@@ -1,0 +1,76 @@
+{% extends "taxes_app/base.html" %}
+{% load mathfilters %}
+{% block content %}
+{% if user.is_authenticated %}
+<canvas id="myChart" width="400" height="300"></canvas>
+<script>
+var ctx = document.getElementById('myChart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+    datasets: [
+      {
+        label: 'Pajamos',
+        data: [{% for veikla in veikla %} '{{ veikla.suma_pajamos | floatformat:2 }}', {% endfor %}],
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 1
+      },
+      {
+        label: 'Išlaidos',
+        data: [{% for veikla in veikla %} '{{ veikla.suma_islaidos_pasirinkimas | floatformat:2 }}', {% endfor %}],
+        backgroundColor: 'rgba(0,129, 218, 0.2)',
+        borderColor: 'rgba(0,129, 218, 1)',
+        borderWidth: 1
+      },
+      {
+        label: 'Mokesciai',
+        data: [{% for veikla in veikla %} '{{ veikla.suma_mokesciai | floatformat:2 }}', {% endfor %}],
+        backgroundColor: 'rgba(0, 255, 0, 0.2)',
+        borderColor: 'rgba(0, 255, 0, 1)',
+        borderWidth: 1
+      },
+      {
+        label: 'Pelnas',
+        data: [{% for veikla in veikla %} '{{ veikla.suma_pelnas | floatformat:2 }}', {% endfor %}],
+        backgroundColor: 'rgba(255, 215, 0, 0.2)',
+        borderColor: 'rgba(255, 215, 0, 1)',
+        borderWidth: 1
+      }
+    ],
+    labels: [{% for veikla in veikla %} '{{ veikla.pavadinimas }}', {% endfor %}],
+  },
+  options: {
+    callbacks: {
+      label: function (t, d) {
+        var xLabel = d.datasets[t.datasetIndex].label;
+        var yLabel = t.yLabel >= 1000 ? '$' + t.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : '$' + t.yLabel;
+        return xLabel + ': ' + yLabel;
+      }
+    },
+    legend: {
+    display: true,
+    position: 'top'
+    },
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true,
+          callback: function (value, index, values) {
+            if (parseInt(value) >= 1000) {
+              return '€' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            } else { return '€' + value; }
+          }
+        }
+      }]
+    }
+  },
+  plugins: [{
+    beforeDraw: function (chart) {
+      var labels = chart.data.labels;
+    }
+  }]
+});
+</script>
+{% endif %}
+{% endblock content %}

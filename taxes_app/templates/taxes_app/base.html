@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'taxes_app/main.css' %}">
+
+    <!--Chartjs CDN-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+
+    {% if title %}
+        <title>Skaičiuoklė - {{ title }}</title>
+    {% else %}
+        <title>Skaičiuoklė</title>
+    {% endif %}
+</head>
+<body>
+    <header class="site-header">
+      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+        <div class="container">
+          <a class="navbar-brand mr-4" href="{% url 'taxes-home' %}">Skaičiuoklė</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarToggle">
+            <div class="navbar-nav mr-auto">
+              <a class="nav-item nav-link" href="{% url 'taxes-home' %}">Pradžia</a>
+              <a class="nav-item nav-link" href="{% url 'taxes-about' %}">Apie</a>
+            </div>
+            <!-- Navbar Right Side -->
+            <div class="navbar-nav">
+            {% if user.is_authenticated %}
+              <li class="nav-item dropdown " >
+                <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Paskyra</a>
+                <div class="dropdown-menu mt-2 "aria-labelledby="dropdown01">
+                  <a class="dropdown-item" href="{% url 'profile' %}">
+                    <svg class="bi bi-person" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" d="M13 14s1 0 1-1-1-4-6-4-6 3-6 4 1 1 1 1h10zm-9.995-.944v-.002.002zM3.022 13h9.956a.274.274 0 00.014-.002l.008-.002c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664a1.05 1.05 0 00.022.004zm9.974.056v-.002.002zM8 7a2 2 0 100-4 2 2 0 000 4zm3-2a3 3 0 11-6 0 3 3 0 016 0z" clip-rule="evenodd"/>
+                    </svg>
+                  {{ user.get_username }}</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{% url 'veikla-create' %}">Nauja Veikla</a>
+                  <a class="dropdown-item" href="{% url 'logout' %}">Atsijungti</a>
+                </div>
+              </li>
+            {% else %}
+              <a class="nav-item nav-link" href="{% url 'login' %}">Prisijungti</a>
+              <a class="nav-item nav-link" href="{% url 'register' %}">Registruotis</a>
+            {% endif %}
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <main role="main" class="container">
+      <div class="row">
+        <div class="col-md-7">
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+          {% block content %}{% endblock %}
+        </div>
+        {% if user.is_authenticated %}
+        <div class="col-md-4">
+          <div class="content-section">
+            <h3>Pagalbinė Lentelė</h3>
+            <p class='text-muted'>
+              <ul class="list-group">
+                <form action="{% url 'search' %}" method="get" class="list-group-item list-group-item-light">
+                  <input name="query" class="form-control" type="text" placeholder="Veiklos Paieška">
+                </form>
+                <a class="list-group-item list-group-item-light" href="{% url 'profile' %}">
+                  <svg class="bi bi-person" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M13 14s1 0 1-1-1-4-6-4-6 3-6 4 1 1 1 1h10zm-9.995-.944v-.002.002zM3.022 13h9.956a.274.274 0 00.014-.002l.008-.002c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664a1.05 1.05 0 00.022.004zm9.974.056v-.002.002zM8 7a2 2 0 100-4 2 2 0 000 4zm3-2a3 3 0 11-6 0 3 3 0 016 0z" clip-rule="evenodd"/>
+                  </svg>
+                  {{ user.get_username }}</a>
+                <a class="list-group-item list-group-item-light" href="{% url 'veikla-create' %}">Nauja Veikla</a>
+                <a class="list-group-item list-group-item-light" href="{% url 'visu-al' %}">Mano Statistika</a>
+                <a class="list-group-item list-group-item-light" href="{% url 'calendar' %}">Kalendorius</a>
+              </ul>
+            </p>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </main>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

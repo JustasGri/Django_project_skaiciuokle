@@ -1,0 +1,42 @@
+{% extends "taxes_app/base.html" %}
+{% block content %}
+{% if user.is_authenticated %}
+    {% for veikla in veiklos %}
+        <article class="media content-section">
+          <img class="rounded-circle article-img" src="{{ veikla.asmuo.profile.image.url }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="{% url 'profile' %}">{{ veikla.asmuo }}</a>
+              <small class="text-muted">{{ veikla.date_posted|date:"F d, Y" }}</small>
+            </div>
+            <h2><a class="article-title" href="{% url 'veikla-detail' veikla.id %}">{{ veikla.pavadinimas }}</a></h2>
+          </div>
+        </article>
+    {% endfor %}
+    {% if page_obj.has_previous %}
+        <a class="btn btn-outline-primary mb-4" href="?page=1">Pirmas</a>
+        <a class="btn btn-outline-primary mb-4" href="?page={{ page_obj.previous_page_number }}">Atgal</a>
+      {% endif %}
+      {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+          <a class="btn btn-primary mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+          <a class="btn btn-outline-primary mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+        <a class="btn btn-outline-primary mb-4" href="?page={{ page_obj.next_page_number }}">Pirmyn</a>
+        <a class="btn btn-outline-primary mb-4" href="?page={{ page_obj.paginator.num_pages }}">Paskutinis</a>
+      {% endif %}
+{% else %}
+  <article class="media content-section">
+    <div class="media-body">
+      <div class="article-metadata">
+        <h4>Individualios Veiklos mokeščių skaičiuoklė</h4>
+        <h4>GPM, VSD, PSD</h4>
+        <h4>Veiklos Pelnas</h4>
+      </div>
+    </div>
+  </article>
+{% endif %}
+{% endblock content %}

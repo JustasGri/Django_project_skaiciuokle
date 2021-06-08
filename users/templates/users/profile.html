@@ -17,6 +17,10 @@
               {{ p_form|crispy }}
           </fieldset>
           <div class="form-group">
+            <a class="btn btn-outline-secondary" href="{% url 'password_reset' %}">Keisi slaptazodį</a>
+          </div>
+          <legend class="border-bottom mb-4"></legend>
+          <div class="form-group">
               <button class="btn btn-outline-info" type="submit">Atnaujinti</button>
           </div>
       </form>
